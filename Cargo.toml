@@ -1,0 +1,38 @@
+[package]
+name = "veloxide"
+version = "0.1.0"
+authors = ["Liam Woodleigh <liam.woodleigh@gmail.com>"]
+license = "MIT"
+description = "Command-line utility for Veloxide, the stack for building web apps with Rust."
+categories = ["command-line-utilities", "web-programming", "config"]
+edition = "2021"
+repository = "https://github.com/liamwh/Veloxide-CLI"
+
+[dependencies]
+tokio = { version = "~1", features = ["full"] }
+clap =  {version = "~4", features = ["cargo"]}
+thiserror = "1"
+regex = "~1"
+toml = "~0"
+serde = "~1"
+serde_derive = "~1"
+
+[dev-dependencies]
+anyhow = "1"
+pretty_assertions = "~1"
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.0.4"
+# The preferred Rust toolchain to use in CI (rustup toolchain syntax)
+rust-toolchain-version = "1.67.1"
+# CI backends to support (see 'cargo dist generate-ci')
+ci = ["github"]
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-msvc", "aarch64-apple-darwin"]

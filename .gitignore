@@ -1,0 +1,29 @@
+# By Default, Ignore any .*, except .gitignore
+.*
+!.gitignore
+
+# --- Rust
+target/
+
+# --- Safety net
+dist/
+_*
+!src/_tests
+__pycache__/
+*.parquet
+*.map
+*.zip
+*.gz
+*.tar
+*.tgz
+
+# videos
+*.mov
+*.mp4
+
+# images
+*.icns
+*.ico
+*.jpeg
+*.jpg
+*.png
