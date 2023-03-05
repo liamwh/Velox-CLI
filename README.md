@@ -12,17 +12,20 @@ Install
 
 Create your first app:
 
-```bash
+```zsh
 # Create your application
 > veloxide init my-app
 
 # Go to created folder
 > cd my-app
 
-# Start the build and hot-reload dev
+# Install tools
+> make tools.required
+
+# Start the supporting containers, followed by the build process
 > make dev
 
-# Once done, open `my-app/` in your Coding Environment (e.g., VSCode)
+# Once done, open `my-app/` in your IDE
 
 # Happy Coding!
 ```
