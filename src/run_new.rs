@@ -77,6 +77,12 @@ pub fn run_veloxide_init(sub_cmd: &ArgMatches) -> Result<()> {
         true,
     )?;
 
+    // Copy the .env.example to .env
+    println!("Copying .env.example to .env");
+    let env_example = app_dir.join(".env.example");
+    let env = app_dir.join(".env");
+    std::fs::copy(&env_example, &env)?;
+
     println!(
         "
 Next steps:

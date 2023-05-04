@@ -1,6 +1,6 @@
 [package]
 name = "veloxide"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Liam Woodleigh <liam.woodleigh@gmail.com>"]
 license = "MIT"
 description = "Command-line utility for Veloxide, the stack for building web apps with Rust."
@@ -29,7 +29,7 @@ lto = "thin"
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.0.4"
+cargo-dist-version = "0.0.5"
 # The preferred Rust toolchain to use in CI (rustup toolchain syntax)
 rust-toolchain-version = "1.67.1"
 # CI backends to support (see 'cargo dist generate-ci')

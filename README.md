@@ -4,26 +4,34 @@ Command-line utility for Veloxide, the stack for building web apps with Rust.
 
 More info can be found in the [template repo](https://github.com/liamwh/Veloxide)
 
-Install
+## Getting started
+
+Install the pre-requisites:
+
+- [Rust](https://www.rust-lang.org/tools/install)
+- [Docker](https://docs.docker.com/get-docker/)
+- [just](https://github.com/casey/just)
+- [Protobuf Compiler](https://grpc.io/docs/protoc-installation/)
+
+Install the Veloxide CLI:
 
 ```sh
 > cargo install veloxide
 ```
 
-Create your first app:
+Create your own app:
 
 ```zsh
-# Create your application
 > veloxide init my-app
 
-# Go to created folder
+# Go to the created folder
 > cd my-app
 
-# Install tools
-> make tools.required
+# Install the required tools for development
+> just install-required
 
-# Start the supporting containers, followed by the build process
-> make dev
+# Set the environment to use the Postgres config, start the supporting containers, and then run the app
+> just dev-postgres
 
 # Once done, open `my-app/` in your IDE
 
