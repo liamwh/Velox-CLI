@@ -1,6 +1,6 @@
 [package]
 name = "veloxide"
-version = "2.0.1"
+version = "2.0.2"
 authors = ["Liam Woodleigh <liam.woodleigh@gmail.com>"]
 license = "MIT"
 description = "The CLI for Veloxide, the stack for building web apps with Rust."
