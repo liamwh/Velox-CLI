@@ -1,27 +1,21 @@
 [package]
 name = "veloxide"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Liam Woodleigh <liam.woodleigh@gmail.com>"]
 license = "MIT"
-description = "Command-line utility for Veloxide, the stack for building web apps with Rust."
+description = "The CLI for Veloxide, the stack for building web apps with Rust."
 categories = ["command-line-utilities", "web-programming", "config"]
 edition = "2021"
 repository = "https://github.com/liamwh/Veloxide-CLI"
 
 [dependencies]
-tokio = { version = "~1", features = ["full"] }
 clap = { version = "~4", features = ["cargo"] }
 thiserror = "1"
 regex = "~1"
-toml = "~0"
-serde = "~1"
-serde_derive = "~1"
-walkdir = "2.4.0"
-indicatif = "0.17.6"
-dialoguer = "0.10.4"
-console = "0.15.7"
-tracing = "0.1.37"
-time = "0.3.28"
+walkdir = "~2.4"
+indicatif = "~0.17"
+dialoguer = "~0.10"
+console = "~0.15"
 
 [dev-dependencies]
 anyhow = "1"
