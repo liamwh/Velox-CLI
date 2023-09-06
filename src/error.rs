@@ -14,8 +14,8 @@ pub enum Error {
     #[error("git command line not found. Required for veloxide.")]
     GitNotPresent,
 
-    #[error("Fail to read line")]
-    StdinFailToReadLine,
+    #[error(transparent)]
+    WalkDir(#[from] walkdir::Error),
 
     #[error(transparent)]
     IOError(#[from] std::io::Error),

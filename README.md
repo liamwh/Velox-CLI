@@ -1,6 +1,13 @@
 # Veloxide-CLI
 
+[![Crates.io](https://img.shields.io/crates/v/veloxide.svg)](https://crates.io/crates/veloxide)
+[![Documentation](https://docs.rs/cargo-index-transit/badge.svg)](https://docs.rs/veloxide/)
+[![Codecov](https://codecov.io/github/liamwh/veloxide-cli/coverage.svg?branch=main)](https://codecov.io/gh/liamwh/veloxide-cli)
+[![Dependency status](https://deps.rs/repo/github/liamwh/veloxide-cli/status.svg)](https://deps.rs/repo/github/liamwh/veloxide-cli)
+
 Command-line utility for Veloxide, the stack for building web apps with Rust.
+
+![Demo GIF](./docs/demo.gif)
 
 More info can be found in the [template repo](https://github.com/liamwh/Veloxide)
 
@@ -21,6 +28,7 @@ Install the Veloxide CLI:
 
 Create your own app:
 
+
 ```zsh
 > veloxide init my-app
 
@@ -30,8 +38,8 @@ Create your own app:
 # Install the required tools for development
 > just install-required
 
-# Set the environment to use the Postgres config, start the supporting containers, and then run the app
-> just dev-postgres
+# Start the supporting containers, and then run the app
+> just dev
 
 # Once done, open `my-app/` in your IDE
 
