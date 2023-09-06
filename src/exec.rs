@@ -1,26 +1,39 @@
 use crate::prelude::*;
-use std::io::{self, stdin, Write};
+use crate::Error;
+use indicatif::ProgressBar;
 use std::path::Path;
-use std::process::{Command, Stdio};
+use std::process::{Command, ExitStatus, Stdio};
 
-pub fn prompt(message: &str, default: Option<&str>) -> Result<String> {
-    print!("{message}");
-    let _ = io::stdout().flush();
+fn build_cmd(
+    cwd: Option<&Path>,
+    cmd_str: &str,
+    args: &[&str],
+    stdout: Stdio,
+    stderr: Stdio,
+) -> Command {
+    let mut cmd = Command::new(cmd_str);
+    if let Some(cwd) = cwd {
+        cmd.current_dir(cwd);
+    }
+    cmd.args(args);
+    cmd.stdout(stdout);
+    cmd.stderr(stderr);
+    cmd
+}
 
-    let mut buf = String::new();
-    stdin()
-        .read_line(&mut buf)
-        .map_err(|_| Error::StdinFailToReadLine)?;
-
-    let val = buf.trim();
-
-    let val = match (val.is_empty(), default) {
-        (true, Some(default)) => default,
-        (false, _) => val,
-        (true, None) => val, // return the empty string (TODO: might want to return error)
-    };
-
-    Ok(val.to_string())
+fn log_execution(
+    print_exec: bool,
+    progress_bar: Option<&mut ProgressBar>,
+    cmd_str: &str,
+    args: &[&str],
+) {
+    if print_exec {
+        let msg = format!("> executing: {} {}", cmd_str, args.join(" "));
+        match progress_bar {
+            Some(pb) => pb.set_message(msg),
+            None => println!("{}", msg),
+        }
+    }
 }
 
 pub fn spawn_and_wait(
@@ -28,58 +41,47 @@ pub fn spawn_and_wait(
     cmd_str: &str,
     args: &[&str],
     print_exec: bool,
-) -> Result<()> {
-    let mut cmd = build_cmd(cwd, cmd_str, args);
-
-    if print_exec {
-        println!("> executing: {} {}", cmd_str, args.join(" "));
-    }
-
-    match cmd.spawn()?.wait() {
-        Ok(status) => {
-            if !status.success() {
-                Err((cmd_str, args, status).into())
-            } else {
-                Ok(())
-            }
-        }
-        Err(ex) => Err(ex.into()),
+    progress_bar: Option<&mut ProgressBar>,
+) -> Result<ExitStatus> {
+    let mut cmd = build_cmd(cwd, cmd_str, args, Stdio::null(), Stdio::null());
+    log_execution(print_exec, progress_bar, cmd_str, args);
+    let status = cmd
+        .spawn()
+        .map_err(|e| Error::Exec(cmd_str.to_string(), e.to_string()))?
+        .wait()?;
+    if !status.success() {
+        Err(Error::Exec(
+            cmd_str.to_string(),
+            format!("Command failed with status {}", status),
+        ))
+    } else {
+        Ok(status)
     }
 }
-
-pub fn build_cmd(cwd: Option<&Path>, cmd: &str, args: &[&str]) -> Command {
-    let mut cmd = Command::new(cmd);
-    if let Some(cwd) = cwd {
-        cmd.current_dir(cwd);
-    }
-    cmd.args(args);
-    cmd
-}
-
 pub fn spawn_output(
     cwd: Option<&Path>,
     cmd_str: &str,
     args: &[&str],
     print_exec: bool,
 ) -> Result<String> {
-    if print_exec {
-        println!("> executing: {} {}", cmd_str, args.join(" "));
-    }
-    let mut cmd = build_cmd(cwd, cmd_str, args);
+    log_execution(print_exec, None, cmd_str, args);
 
-    match cmd.stdout(Stdio::piped()).output() {
-        Err(ex) => Err(ex.into()),
-        Ok(output) => {
-            let txt = if output.status.success() {
-                String::from_utf8(output.stdout)
-            } else {
-                String::from_utf8(output.stderr)
-            };
+    let mut cmd = build_cmd(cwd, cmd_str, args, Stdio::piped(), Stdio::piped());
+    let output = cmd
+        .output()
+        .map_err(|e| Error::Exec(cmd_str.to_string(), e.to_string()))?;
 
-            match txt {
-                Err(ex) => Err(Error::Exec(s!(cmd_str), f!("{ex:?}"))),
-                Ok(txt) => Ok(txt),
-            }
-        }
-    }
+    let txt = if output.status.success() {
+        String::from_utf8(output.stdout)
+            .map_err(|_| Error::Exec(cmd_str.to_string(), "Failed to decode output".to_string()))?
+    } else {
+        String::from_utf8(output.stderr).map_err(|_| {
+            Error::Exec(
+                cmd_str.to_string(),
+                "Failed to decode error output".to_string(),
+            )
+        })?
+    };
+
+    Ok(txt)
 }
